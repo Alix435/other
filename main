@@ -1,0 +1,26 @@
+import monitoring
+
+from database import Database
+
+db = Database()
+
+if __name__ == '__main__':
+    name = 'test'
+    printers_data = db.read_db(name)
+
+    new_list_printer = [
+        monitoring.ping_ip({
+            'id': p['id'],
+            'name': p['name'],
+            'ip_address': p['ip_address'],
+            'model': p['model'],
+            'location': p['location'],
+            'status': False,
+            'response_time': 0,
+            'last_check': ""
+        })
+        for p in printers_data
+    ]
+
+    for printer in new_list_printer:
+        print(printer)
