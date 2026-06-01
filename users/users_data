@@ -3,21 +3,31 @@ from string import Template
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
+
+
 # ________________________________________________________
 html_template = Template("""\
 <html>
-<body>
-    <p>Здравствуйте, $name</p>
-    <p>Ваш логин для входа: $login</p>
-    <p>Ваш временный пароль для входа: $passwd</p>
-    <p>Учётная запись привязана к: $email</p>
+<body style="color: #333333;">
+    <p>Здравствуйте, $name!</p>
+    <p>Внедрен корпоративный мессенжер для общения и обмена информацией внутри организации!</p>
+    <p>Приложение можно установить как на ваш смартфон, так и рабочий ПК.</p>
+    <p>Инструкция по установке во вложении.</p>
+    <hr>
+    <p>Ниже указаны ваши данные для входа в приложение.</p>
+    <p>Ваш логин: <b>$login</b></p>
+    <p>Ваш временный пароль: <b>$passwd</b></p>
+    <p>Адрес сервера:</p>
+    <hr>
+    <p>По всем вопросам просьба обращаться в ИТ отдел.</p>
+    <p>HelpDesk:</p>
 </body>
 </html>
 """)
-# ________________________________________________________
+# ________________________________________________________   <p>$email</p>
 
-users_date = 'СписокDefault.csv'
-OUTPUT_DIR = Path("./outlook_drafts_tss")
+users_date = 'Users.csv'
+OUTPUT_DIR = Path("./outlook_drafts")
 OUTPUT_DIR.mkdir(exist_ok=True)
 
 class Users:
