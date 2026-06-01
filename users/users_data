@@ -1,21 +1,67 @@
+from pathlib import Path
+from string import Template
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+
+# ________________________________________________________
+html_template = Template("""\
+<html>
+<body>
+    <p>Здравствуйте, $name</p>
+    <p>Ваш логин для входа: $login</p>
+    <p>Ваш временный пароль для входа: $passwd</p>
+    <p>Учётная запись привязана к: $email</p>
+</body>
+</html>
+""")
+# ________________________________________________________
+
+users_date = 'СписокDefault.csv'
+OUTPUT_DIR = Path("./outlook_drafts_tss")
+OUTPUT_DIR.mkdir(exist_ok=True)
+
 class Users:
     def __init__(self):
         self.users = []
         self._load()
 
     def _load(self):
-        with open(path, 'r', encoding='utf-8') as file:
+        with open(users_date, 'r', encoding='utf-8') as file:
             for i, line in enumerate(file):
                 if i == 0:
                     continue
                 parts = line.strip().split(';')
                 if len(parts) == 4:
-                    self.users.append(parts)
+                    user_data = {
+                        "name": parts[0],
+                        "login": parts[1],
+                        "email": parts[2],
+                        "passwd": parts[3]
+                    }
+                    self.users.append(user_data)
 
     def read(self):
         for date in self.users:
-            print(date)
+            create_msg(date)
 
+def create_msg(date):
+    msg = MIMEMultipart("mixed")
+    msg["Subject"] = f"Важно! Информационное сообщение от отдела ИТ!"
+    msg["From"] = ''
+    msg["To"] = date["email"]
+
+    html_content = html_template.substitute(date)
+    msg.attach(MIMEText(html_content, "html", "utf-8"))
+
+    safe_email = date["email"].replace("@", "_at_")
+    filename = f"{safe_email}.eml"
+    filepath = OUTPUT_DIR / filename
+
+    with open(filepath, "w", encoding="utf-8") as f:
+        f.write(msg.as_string())
+
+    print(f"Сохранено: {filepath}")
+    print(f"Папка: {OUTPUT_DIR.absolute()}")
 
 if __name__ == '__main__':
     users = Users()
