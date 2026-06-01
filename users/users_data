@@ -1,0 +1,22 @@
+class Users:
+    def __init__(self):
+        self.users = []
+        self._load()
+
+    def _load(self):
+        with open(path, 'r', encoding='utf-8') as file:
+            for i, line in enumerate(file):
+                if i == 0:
+                    continue
+                parts = line.strip().split(';')
+                if len(parts) == 4:
+                    self.users.append(parts)
+
+    def read(self):
+        for date in self.users:
+            print(date)
+
+
+if __name__ == '__main__':
+    users = Users()
+    users.read()
