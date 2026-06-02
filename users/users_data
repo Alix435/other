@@ -3,14 +3,12 @@ from string import Template
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
-
-
 # ________________________________________________________
 html_template = Template("""\
 <html>
 <body style="color: #333333;">
     <p>Здравствуйте, $name!</p>
-    <p>Внедрен корпоративный мессенжер для общения и обмена информацией внутри организации!</p>
+    <p>Внедрен корпоративный мессенжер <b>Element</b> для общения и обмена информацией внутри организации!</p>
     <p>Приложение можно установить как на ваш смартфон, так и рабочий ПК.</p>
     <p>Инструкция по установке во вложении.</p>
     <hr>
@@ -26,17 +24,16 @@ html_template = Template("""\
 """)
 # ________________________________________________________   <p>$email</p>
 
-users_date = 'Users.csv'
 OUTPUT_DIR = Path("./outlook_drafts")
 OUTPUT_DIR.mkdir(exist_ok=True)
 
 class Users:
-    def __init__(self):
+    def __init__(self, file_name):
         self.users = []
         self._load()
 
     def _load(self):
-        with open(users_date, 'r', encoding='utf-8') as file:
+        with open(file_name, 'r', encoding='utf-8') as file:
             for i, line in enumerate(file):
                 if i == 0:
                     continue
@@ -71,8 +68,13 @@ def create_msg(date):
         f.write(msg.as_string())
 
     print(f"Сохранено: {filepath}")
-    print(f"Папка: {OUTPUT_DIR.absolute()}")
 
 if __name__ == '__main__':
-    users = Users()
+    print('Файл должен быть формата csv utf-8 разделитель - запятая\nФайл нужно поместить туда же где и находится скрипт')
+    print('Укажите полное имя файла с форматом:')
+    file_name = input()
+
+    users = Users(file_name)
     users.read()
+
+    print(f"Все файлы сохранены в папке: {OUTPUT_DIR.absolute()}")
